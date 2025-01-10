@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
-from .nltk_utils import get_wordnet_info  
+from .nltk_utils import get_wordnet_info
+from .models import City
 
 # Connect to Elasticsearch
 es = Elasticsearch("http://localhost:9200")
@@ -15,7 +16,7 @@ def query_results(request):
 
     # Perform search in Elasticsearch
     response = es.search(
-        index="city_data",  
+        index="city_data",
         body={"query": {"match": {"content": query}}},
     )
 
@@ -36,7 +37,10 @@ def query_results(request):
 
     # Fetch NLTK information (synonyms, definitions, related terms)
     nltk_info = get_wordnet_info(query)
-    
+
+    # Fetch 3 random city names from the database
+    random_cities = City.objects.order_by("?")[:3]
+
     return render(
         request,
         "search/query_results.html",
@@ -44,5 +48,6 @@ def query_results(request):
             "query": query,
             "results": results,
             "nltk_info": nltk_info,
+            "random_cities": random_cities,  # Pass the random cities to the template
         },
     )

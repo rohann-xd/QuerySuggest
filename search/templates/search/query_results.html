@@ -11,6 +11,16 @@
     <div class="container">
       <h1>Results for "{{ query }}"</h1>
 
+      <div>
+        <span>
+          <u>Also Search for</u> : 
+          {% for city in random_cities %}
+            <a href="?q={{ city.name }}">{{ city.name }}</a>
+            {% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </span>
+      </div>
+
       {% if results %}
       <ul>
         {% for result in results %}
