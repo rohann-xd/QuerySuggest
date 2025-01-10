@@ -19,7 +19,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <p>No results found for "{{ query }}".</p>
+      <p class="no-results">No results found for "{{ query }}".</p>
       {% endif %}
       <a href="{% url 'search_page' %}">Back to Search</a>
     </div>
