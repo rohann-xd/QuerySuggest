@@ -10,18 +10,47 @@
   <body>
     <div class="container">
       <h1>Results for "{{ query }}"</h1>
+
       {% if results %}
       <ul>
         {% for result in results %}
         <li>
-          <h3>{{ result.title }}</h3>
-          <p>{{ result.content }}</p>  <!-- Display the content of the found city -->
+          <strong>{{ result.title }}</strong><br />
+          <p>{{ result.content }}</p>
         </li>
         {% endfor %}
       </ul>
       {% else %}
       <p class="no-results">No results found for "{{ query }}".</p>
       {% endif %}
+
+      <h3>Additional Information:</h3>
+
+      {% if nltk_info %}
+      <h4>Synonyms:</h4>
+      <ul>
+        {% for synonym in nltk_info.synonyms %}
+        <li>{{ synonym }}</li>
+        {% endfor %}
+      </ul>
+
+      <h4>Definitions:</h4>
+      <ul>
+        {% for definition in nltk_info.definitions %}
+        <li>{{ definition }}</li>
+        {% endfor %}
+      </ul>
+
+      <h4>Related Words:</h4>
+      <ul>
+        {% for related_word in nltk_info.related_words %}
+        <li>{{ related_word }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No additional information available.</p>
+      {% endif %}
+
       <a href="{% url 'search_page' %}">Back to Search</a>
     </div>
   </body>

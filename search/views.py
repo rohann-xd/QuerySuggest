@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
+from .nltk_utils import get_wordnet_info  
 
 # Connect to Elasticsearch
 es = Elasticsearch("http://localhost:9200")
@@ -33,6 +34,15 @@ def query_results(request):
     else:
         results.append({"title": "No results found", "content": ""})
 
+    # Fetch NLTK information (synonyms, definitions, related terms)
+    nltk_info = get_wordnet_info(query)
+    
     return render(
-        request, "search/query_results.html", {"query": query, "results": results}
+        request,
+        "search/query_results.html",
+        {
+            "query": query,
+            "results": results,
+            "nltk_info": nltk_info,
+        },
     )
