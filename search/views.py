@@ -1,5 +1,8 @@
 from django.shortcuts import render
-import random
+from elasticsearch import Elasticsearch
+
+# Connect to Elasticsearch
+es = Elasticsearch("http://localhost:9200")
 
 
 def search_page(request):
@@ -9,15 +12,26 @@ def search_page(request):
 def query_results(request):
     query = request.GET.get("q", "")
 
-    # Mimic dynamic data: Generate a random number of results
-    possible_results = [
-        {"title": "Django Documentation", "url": "https://docs.djangoproject.com/"},
-        {"title": "Python Official Website", "url": "https://www.python.org/"},
-        {"title": "Learn Django", "url": "https://www.djangoproject.com/start/"},
-        {"title": "GitHub", "url": "https://github.com/"},
-        {"title": "Stack Overflow", "url": "https://stackoverflow.com/"},
-    ]
-    results = random.sample(possible_results, random.randint(0, len(possible_results)))
+    # Perform search in Elasticsearch
+    response = es.search(
+        index="city_data",  
+        body={"query": {"match": {"content": query}}},
+    )
+
+    results = []
+    if response["hits"]["total"]["value"] > 0:
+        for hit in response["hits"]["hits"]:
+            # Extract relevant data from the search hit
+            results.append(
+                {
+                    "title": hit["_source"][
+                        "city"
+                    ],  # You can change this based on your document structure
+                    "content": hit["_source"]["content"],
+                }
+            )
+    else:
+        results.append({"title": "No results found", "content": ""})
 
     return render(
         request, "search/query_results.html", {"query": query, "results": results}

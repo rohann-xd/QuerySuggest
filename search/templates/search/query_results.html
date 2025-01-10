@@ -14,7 +14,8 @@
       <ul>
         {% for result in results %}
         <li>
-          <a href="{{ result.url }}" target="_blank">{{ result.title }}</a>
+          <h3>{{ result.title }}</h3>
+          <p>{{ result.content }}</p>  <!-- Display the content of the found city -->
         </li>
         {% endfor %}
       </ul>
